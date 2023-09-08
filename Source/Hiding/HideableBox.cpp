@@ -4,20 +4,18 @@
 #include "HideableBox.h"
 
 // Sets default values
-AHideableBox::AHideableBox()
+AHideableBox::AHideableBox(): AActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	HideableCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	HideableCollider->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-	
+
 	SetRootComponent(HideableCollider);
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(HideableCollider);
-
-
 }
 
 // Called when the game starts or when spawned
@@ -37,12 +35,7 @@ void AHideableBox::BeginPlay()
 void AHideableBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-void AHideableBox::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-	//UE_LOG(LogTemp, Log, TEXT("In!!!!"));
+	
 }
 
 // void AHideableBox::NotifyHit(

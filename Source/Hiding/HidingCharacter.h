@@ -39,7 +39,7 @@ class AHidingCharacter : public ACharacter
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int NumberOfColliders = 0;
-	
+
 public:
 	AHidingCharacter();
 	
@@ -51,7 +51,8 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+	
+	void Hide(const FInputActionValue& Value);
 
 protected:
 	// APawn interface
@@ -59,6 +60,8 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+
+	virtual void Tick(float DeltaSeconds);
 
 public:
 	/** Returns CameraBoom subobject **/

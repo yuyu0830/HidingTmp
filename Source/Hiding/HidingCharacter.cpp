@@ -16,6 +16,7 @@
 
 AHidingCharacter::AHidingCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	// Set size for collision capsule
 	UCapsuleComponent* Collider = GetCapsuleComponent();
 	Collider->InitCapsuleSize(42.f, 96.0f);
@@ -68,6 +69,15 @@ void AHidingCharacter::BeginPlay()
 		}
 	}
 }
+
+void AHidingCharacter::Tick(float DeltaSeconds)
+{
+	if (GetNumberOfColliders())
+	{
+		UE_LOG(LogTemp, Log, TEXT("You Can Hide!!"));
+	}
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -126,6 +136,14 @@ void AHidingCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void AHidingCharacter::Hide(const FInputActionValue& Value)
+{
+	if (NumberOfColliders)
+	{
+		UE_LOG(LogTemp, Log, TEXT("HIDE"));
 	}
 }
 
