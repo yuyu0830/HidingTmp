@@ -4,9 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ParkourBehaviour.h"
 #include "InputActionValue.h"
 #include "HidingCharacter.generated.h"
 
+// UENUM(BlueprintType)
+// enum class PlayerStateEnum : uint8
+// {
+// 	PS_Default = 0 UMETA(DisplayName = "Default"),
+// 	PS_Walking  UMETA(DisplayName = "Walking"),
+// 	PS_Running  UMETA(DisplayName = "Running"),
+// 	PS_Rolling  UMETA(DisplayName = "Rolling"),
+// 	PS_Parkour  UMETA(DisplayName = "Parkour"),
+// 	PS_Hiding   UMETA(DisplayName = "Hiding")
+// };	
 
 UCLASS(config=Game)
 class AHidingCharacter : public ACharacter
@@ -28,15 +39,18 @@ class AHidingCharacter : public ACharacter
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* JumpAction;
-
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
-
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ParkourAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UParkourBehaviour* ParkourBehaviour;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int NumberOfColliders = 0;
 
@@ -45,7 +59,7 @@ public:
 	
 
 protected:
-
+	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
@@ -54,6 +68,8 @@ protected:
 	
 	void Hide(const FInputActionValue& Value);
 
+	void TryParkour();
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
