@@ -51,6 +51,8 @@ AHidingCharacter::AHidingCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	ParkourBehaviour = CreateDefaultSubobject<UParkourBehaviour>(TEXT("ParkourBehaviour"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -96,6 +98,8 @@ void AHidingCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHidingCharacter::Look);
+
+		EnhancedInputComponent->BindAction(ParkourAction, ETriggerEvent::Triggered, this, &AHidingCharacter::TryParkour);
 
 	}
 
@@ -167,6 +171,12 @@ void AHidingCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor*
 		// 특정 채널과 겹침이 종료된 경우
 		NumberOfColliders--;
 	}
+}
+
+void AHidingCharacter::TryParkour()
+{
+	UE_LOG(LogTemp, Log, TEXT("ACharacter Parkour!!"));
+	ParkourBehaviour->TryParkour(this);
 }
 
 
