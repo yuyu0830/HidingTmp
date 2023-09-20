@@ -31,7 +31,7 @@ void UParkourBehaviour::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	// ...
 }
 
-void UParkourBehaviour::TryParkour(AActor* Player)
+void UParkourBehaviour::TryParkour(const AActor* Player)
 {
 	FVector PlayerLocation = Player->GetActorLocation();
 	FVector PlayerDirection = Player->GetActorForwardVector();
@@ -39,47 +39,69 @@ void UParkourBehaviour::TryParkour(AActor* Player)
 	
 	FVector FrontTopLocation = FrontLocation + FVector(0, 0, 50);
 	FVector FrontBottomLocation = FrontLocation - FVector(0, 0, 50);
-	DrawDebugPoint(Player->GetWorld(), FrontTopLocation, 200, FColor(52, 220, 239), true);
-	DrawDebugPoint(Player->GetWorld(), FrontBottomLocation, 200, FColor(52, 220, 239), true);
 
+	//UE_LOG(LogTemp, Log, TEXT("Location : %s"), *PlayerLocation.ToString());
+	//UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *PlayerDirection.ToString());
+	//UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *FrontLocation.ToString());
+	//DrawDebugPoint(Player->GetWorld(), FrontTopLocation, 90, FColor(52, 220, 239), true);
+	//DrawDebugPoint(Player->GetWorld(), FrontBottomLocation, 90, FColor(52, 220, 239), true);
+	
 	FHitResult FrontHitResult;
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(Player);
 	
-	if (Player->GetWorld()->LineTraceSingleByChannel(FrontHitResult, FrontBottomLocation, FrontTopLocation, ECC_Visibility, CollisionParams))
+	if (!Player->GetWorld()->LineTraceSingleByChannel(FrontHitResult, FrontTopLocation, FrontBottomLocation, ECC_Visibility, CollisionParams))
 	{
-		UE_LOG(LogTemp, Log, TEXT("HIT Something!"));
+		UE_LOG(LogTemp, Log, TEXT("Nothing..."));
+		return;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("HIT nothing..."));
-	}	
 	
-	//DrawDebugSphere(Player->GetWorld(), PlayerLocation, 200, 26, FColor(181, 0, 0), true, -1, 0, 2);
-	//UE_LOG(LogTemp, Log, TEXT("Component Parkour!"));
-	// if (!Player) return;
-	// FVector PlayerChestLocation = Player->GetActorLocation();
-	// FVector PlayerDirection = Player->GetActorForwardVector();
-	// FVector ChestFrontLocation = PlayerChestLocation + PlayerDirection * ParkourCheckDistance;
-	//
-	// // UE_LOG(LogTemp, Log, TEXT("Location : %s"), *PlayerChestLocation.ToString());
-	// // UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *PlayerDirection.ToString());
-	// // UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *ChestFrontLocation.ToString());
-	//
-	// FHitResult ChestHitResult;
-	//
-	// FCollisionQueryParams CollisionParams;
-	// CollisionParams.AddIgnoredActor(Player);
+	UE_LOG(LogTemp, Log, TEXT("HIT Something!"));
+	AActor* HitActor = FrontHitResult.GetActor();
+	
+	if (!HitActor)
+	{
+		UE_LOG(LogTemp, Log, TEXT("There is no Actor... Error"));
+		return;
+	}
+	
+	FVector origin;
+	FVector boxExtent;
+	HitActor->GetActorBounds(false, origin, boxExtent);
+	UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *origin.ToString());
+	UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *boxExtent.ToString());
 
-	// if (GetWorld()->LineTraceSingleByChannel(ChestHitResult, PlayerChestLocation, ChestFrontLocation, ECC_Visibility, CollisionParams))
+	float HeightOfWall = origin.Z + boxExtent.Z / 2;
+	float PlayerFoot = PlayerLocation.Z - 90.f;
+
+	UE_LOG(LogTemp, Log, TEXT("HeightGap : %.4f"), HeightOfWall - PlayerFoot);
+	// if (Player->GetWorld()->LineTraceSingleByChannel(FrontHitResult, FrontTopLocation, FrontBottomLocation, ECC_Visibility, CollisionParams))
 	// {
 	// 	UE_LOG(LogTemp, Log, TEXT("HIT Something!"));
+	// 	AActor* HitActor = FrontHitResult.GetActor();
+	// 	
+	// 	if (HitActor)
+	// 	{
+	// 		UE_LOG(LogTemp, Log, TEXT("Get Actor Complete!"));
+	// 		FVector origin;
+	// 		FVector boxExtent;
+	// 		HitActor->GetActorBounds(false, origin, boxExtent);
+	// 		UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *origin.ToString());
+	// 		UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *boxExtent.ToString());
+	// 	}
+	// 	
+	// 	//UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(HitActor);
+	//
 	// }
 	// else
 	// {
 	// 	UE_LOG(LogTemp, Log, TEXT("HIT nothing..."));
+	// 	return;
 	// }	
+	
+	FVector PlayerTopLocation = PlayerLocation + FVector(0, 0, 50);
+	FVector PlayerBottomLocation = PlayerLocation - FVector(0, 0, 50);
 
-	// FHitResult RightHitResult;
-
+	
+	
 }

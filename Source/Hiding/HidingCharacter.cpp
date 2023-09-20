@@ -74,10 +74,10 @@ void AHidingCharacter::BeginPlay()
 
 void AHidingCharacter::Tick(float DeltaSeconds)
 {
-	if (GetNumberOfColliders())
-	{
-		UE_LOG(LogTemp, Log, TEXT("You Can Hide!!"));
-	}
+	// if (GetNumberOfColliders())
+	// {
+	// 	//UE_LOG(LogTemp, Log, TEXT("You Can Hide!!"));
+	// }
 }
 
 
@@ -175,7 +175,7 @@ void AHidingCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor*
 
 void AHidingCharacter::TryParkour()
 {
-	UE_LOG(LogTemp, Log, TEXT("ACharacter Parkour!!"));
+	//UE_LOG(LogTemp, Log, TEXT("ACharacter Parkour!!"));
 	ParkourBehaviour->TryParkour(this);
 }
 
