@@ -15,8 +15,17 @@ class HIDING_API UParkourBehaviour : public UActorComponent
 	
 	UPROPERTY(EditAnywhere)
 	float ParkourCheckDistance;
+
 	UPROPERTY(EditAnywhere)
+	float JumpoverCheckDistance;
+	
+	UPROPERTY(VisibleAnywhere, Blueprintable, meta=(AllowPrivateAccess = "true"))
 	bool bIsParkouring;
+	
+	FVector ParkourTargetLocation;
+
+	
+	
 public:	
 	// Sets default values for this component's properties
 	UParkourBehaviour();
@@ -31,5 +40,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void TryParkour(const AActor* Player);
-		
+	bool GetIsParkouring() { return bIsParkouring; }
 };

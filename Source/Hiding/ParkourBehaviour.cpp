@@ -19,7 +19,6 @@ void UParkourBehaviour::BeginPlay()
 	Super::BeginPlay();
 	
 	// ...
-	ParkourCheckDistance = 100.f;
 }
 
 
@@ -35,73 +34,49 @@ void UParkourBehaviour::TryParkour(const AActor* Player)
 {
 	FVector PlayerLocation = Player->GetActorLocation();
 	FVector PlayerDirection = Player->GetActorForwardVector();
-	FVector FrontLocation = PlayerLocation + PlayerDirection * ParkourCheckDistance;
-	
-	FVector FrontTopLocation = FrontLocation + FVector(0, 0, 50);
-	FVector FrontBottomLocation = FrontLocation - FVector(0, 0, 50);
+	FVector FrontLocation = PlayerLocation + (PlayerDirection * ParkourCheckDistance);
 
-	//UE_LOG(LogTemp, Log, TEXT("Location : %s"), *PlayerLocation.ToString());
-	//UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *PlayerDirection.ToString());
-	//UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *FrontLocation.ToString());
-	//DrawDebugPoint(Player->GetWorld(), FrontTopLocation, 90, FColor(52, 220, 239), true);
-	//DrawDebugPoint(Player->GetWorld(), FrontBottomLocation, 90, FColor(52, 220, 239), true);
+	UE_LOG(LogTemp, Log, TEXT("Distance : %.4f"), ParkourCheckDistance);
 	
-	FHitResult FrontHitResult;
+	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
+	
 	CollisionParams.AddIgnoredActor(Player);
 	
-	if (!Player->GetWorld()->LineTraceSingleByChannel(FrontHitResult, FrontTopLocation, FrontBottomLocation, ECC_Visibility, CollisionParams))
+	DrawDebugLine(Player->GetWorld(), FrontLocation + FVector(0, 0, 50), FrontLocation - FVector(0, 0, 50), FColor::Emerald, true, -1, 0, 10);
+	
+	if (!Player->GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		FrontLocation + FVector(0, 0, 50),
+		FrontLocation - FVector(0, 0, 50),
+		ECC_Visibility,
+		CollisionParams))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Nothing..."));
 		return;
 	}
 	
 	UE_LOG(LogTemp, Log, TEXT("HIT Something!"));
-	AActor* HitActor = FrontHitResult.GetActor();
 	
-	if (!HitActor)
+	CollisionParams.AddIgnoredActor(HitResult.GetActor());
+	
+	ParkourTargetLocation = HitResult.ImpactPoint;
+
+	
+	if (Player->GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		ParkourTargetLocation,
+		ParkourTargetLocation + FVector(0, 0, 180.f),
+		ECC_Visibility,
+		CollisionParams))
 	{
-		UE_LOG(LogTemp, Log, TEXT("There is no Actor... Error"));
+		UE_LOG(LogTemp, Log, TEXT("Something In Parkour Spot"));
 		return;
 	}
 	
-	FVector origin;
-	FVector boxExtent;
-	HitActor->GetActorBounds(false, origin, boxExtent);
-	UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *origin.ToString());
-	UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *boxExtent.ToString());
-
-	float HeightOfWall = origin.Z + boxExtent.Z / 2;
-	float PlayerFoot = PlayerLocation.Z - 90.f;
-
-	UE_LOG(LogTemp, Log, TEXT("HeightGap : %.4f"), HeightOfWall - PlayerFoot);
-	// if (Player->GetWorld()->LineTraceSingleByChannel(FrontHitResult, FrontTopLocation, FrontBottomLocation, ECC_Visibility, CollisionParams))
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("HIT Something!"));
-	// 	AActor* HitActor = FrontHitResult.GetActor();
-	// 	
-	// 	if (HitActor)
-	// 	{
-	// 		UE_LOG(LogTemp, Log, TEXT("Get Actor Complete!"));
-	// 		FVector origin;
-	// 		FVector boxExtent;
-	// 		HitActor->GetActorBounds(false, origin, boxExtent);
-	// 		UE_LOG(LogTemp, Log, TEXT("Direction : %s"), *origin.ToString());
-	// 		UE_LOG(LogTemp, Log, TEXT("FrontLocation : %s"), *boxExtent.ToString());
-	// 	}
-	// 	
-	// 	//UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(HitActor);
-	//
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Log, TEXT("HIT nothing..."));
-	// 	return;
-	// }	
+	UE_LOG(LogTemp, Log, TEXT("Can Parkour!"));
 	
-	FVector PlayerTopLocation = PlayerLocation + FVector(0, 0, 50);
-	FVector PlayerBottomLocation = PlayerLocation - FVector(0, 0, 50);
-
-	
+	FVector JumpoverLocation = PlayerLocation + (PlayerDirection * JumpoverCheckDistance);
+	DrawDebugLine(Player->GetWorld(), JumpoverLocation + FVector(0, 0, 50), JumpoverLocation - FVector(0, 0, 50), FColor::Purple, true, -1, 0, 10);
 	
 }
