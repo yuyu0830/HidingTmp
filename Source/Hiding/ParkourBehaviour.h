@@ -38,7 +38,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	bool CheckParkourableSpot(const AActor* Player, const FVector& PlayerLocation, const FVector& PlayerDirection, FHitResult& HitResult, FCollisionQueryParams& CollisionParams);
 	void TryParkour(const AActor* Player);
 	bool GetIsParkouring() { return bIsParkouring; }
 };
